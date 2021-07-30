@@ -1,13 +1,13 @@
-#ChaosMonkey Tester
+# ChaosMonkey Tester
 This project is designed to randomly test an application to see how it can handle failure
 
-##Setup
+## Setup
 To get started run
 ```
 npm install
 ```
 
-##Running the application
+## Running the application
 ```
 make run
 ```
