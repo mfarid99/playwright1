@@ -73,8 +73,8 @@ function chooseARandomAction(currentPageElements){
     let injectionStrings = [
       '<script>alert("P0WNED!");</script>', 
       '<H1> Vulnerability test </H1> <META HTTP-EQUIV="refresh" CONTENT="1;url=http://www.test.com">',
-      `<BR SIZE="&{alert('Injected')}"> 
-      <DIV STYLE="background-image: url(javascript:alert('Injected'))">
+      `<BR SIZE="&{alert('P0WNED!)}"> 
+      <DIV STYLE="background-image: url(javascript:alert('P0WNED!))">
       `
     ];
 
