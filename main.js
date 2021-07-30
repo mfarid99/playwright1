@@ -42,8 +42,6 @@ async function findAllRelaventElements(page){
     return {buttons: buttons.filter(e => e.isVisible() && e.isEnabled()),
        atags: aTags.filter(e => e.isVisible() && e.isEnabled()),
        inputs: inputs.filter(e => e.isVisible() && e.isEnabled())};
-
-
 }
 
 
@@ -111,14 +109,14 @@ async function runAction(page, actionTuple){
   if(actionTuple.action === NAVIGATE){
     let flip = _rng(0,1);
 
-    if(flip){
+    // if(flip){
       console.log("clicking on ", actionTuple.element);
       await actionTuple.element.click();
-    }
-    else{
-      console.log("double clicking on ", actionTuple.element);
-      await actionTuple.element.dblClick();
-    }
+    // }
+    // else{
+    //   console.log("double clicking on ", actionTuple.element);
+    //   await actionTuple.element.dblClick();
+    // }
 
     
   }
