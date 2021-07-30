@@ -1,5 +1,11 @@
 const playwright = require("playwright");
 //Discussion: Hey guys Im assuming all these functions should take a "page"
+
+//Action types
+const NAVIGATE = 'navigate', ATTACK = 'jsInject';
+
+
+
 //object from playwright
 
 async function login(page){
@@ -26,7 +32,46 @@ async function findAllRelaventElements(page){
  * @returns {action: "", element: <element>} tuple
  */
 function chooseARandomAction(currentPageElements){
-  //TODO: MB to implement
+  //Will choose between naviage and injection attack
+  let choices = [NAVIGATE, ATTACK];
+
+  let coinFlip = Math.random() < 0.5 ? 0 : 1;
+
+  let ret = {action: choices[coinFlip]};
+
+  //pick the elment we want to click
+  if(ret.action === NAVIGATE && 
+    (currentPageElements.atags.length > 0 || currentPageElements.buttons.length > 0)){
+    let clickableElements = currentPageElements.atags.concat(currentPageElements.buttons);
+    let totalElements = clickableElements.length;
+    let elementIdx = Math.floor(Math.random() * totalElements);
+    let randomElement = clickableElements[elementIdx];
+    ret.element = randomElement;
+  }
+  //pick the action we want to take
+  else if(currentPageElements.inputs.length > 0){
+    let injectionStrings = [
+      '<script>alert("P0WNED!");</script>', 
+      '<H1> Vulnerability test </H1> <META HTTP-EQUIV="refresh" CONTENT="1;url=http://www.test.com">',
+      `<BR SIZE="&{alert('Injected')}"> 
+      <DIV STYLE="background-image: url(javascript:alert('Injected'))">
+      `
+    ];
+
+    ret.element = currentPageElements.inputs[ Math.floor(Math.random() * currentPageElements.inputs.length)]
+
+    ret.attackString = injectionStrings[Math.floor(Math.random() * injectionStrings.length)];
+  }
+  else{
+    //whoops! not sure we should do this?
+    //maybe go back instead?
+    return chooseARandomAction(currentPageElements);
+  }
+
+
+
+
+
 }
 
 /**
