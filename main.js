@@ -12,9 +12,9 @@ var pageDidCrash = false, dialogDidShow = false;
 async function login(page){
   let login = require('../login_info_Fedex.json')
   let username = login.username
-  console.log(username)
+  //console.log(username)
   let password = login.password
-  console.log(password)
+  //console.log(password)
 
  await page.goto("https://app.triblio-qa.com/app#/home");
  await page.type('[name=email]', username);
@@ -98,17 +98,24 @@ async function runAction(page, action){
     let flip = _rng(0,1);
 
     if(flip){
+      console.log("clicking on ", element);
       await action.element.click();
     }
     else{
+      console.log("double clicking on ", element);
       await action.element.dblClick();
     }
 
     
   }
-  else if(action === INPUT){
+  else if(action === ATTACK){
+    console.log("attacking! ", element);
     action.element.fill(action.attackString);
   }
+
+  await page.waitForNavigation({
+    waitUntil: 'networkidle0',
+  });
 }
 
 
@@ -126,18 +133,6 @@ function checkForErrors(browser, context, page){
   else return false;
 
 
-}
-
-/**
- * returns if the strings are different
- * obviously this implementation is overly simplified.
- * We might need to make it more complex
- * 
- * @param {String} previousPage previous url
- * @param {String} currentPage current url
- */
-function didPageChange(previousPage, currentPage){
-  return previousPage !== currentPage;
 }
 
 
