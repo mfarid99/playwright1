@@ -186,12 +186,17 @@ async function checkForModels(page) {
   console.log('at models');
   let models = await page.$$('div.modal');
   console.log(models);
-  if(models.length > 0){
-    console.log('got to where there is a modal');
-    // page.$("button:contains(Cancel)");
-    await page.click("text=Cancel");
-
+  try{
+    if(models.length > 0){
+      console.log('got to where there is a modal');
+      // page.$("button:contains(Cancel)");
+      await page.click("text=Cancel");
+    }
   }
+  catch{
+    await page.click("text=Close")
+  }
+  
 }
 
 
