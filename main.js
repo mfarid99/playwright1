@@ -20,9 +20,9 @@ async function login(page){
  await page.type('[name=email]', username);
  await page.type('[name=password]', password);
  await page.keyboard.press('Enter')
- await page.waitForNavigation({
-    waitUntil: 'networkidle0',
-  });
+ console.log('just before wait in login')
+  await page.waitForNavigation();
+  console.log('just after wait in login')
 }
 
 
@@ -166,8 +166,9 @@ async function printActionLogAndExit(browser, actionLog){
  * @param {Array} actionLog history of actions
  */
 async function runLoop(browser, context, page, actionLog){
-
+console.log('In run loop');
   let elements = await findAllRelaventElements(page);
+  console.log('elements \n', elements);
 
   let randomAction = chooseARandomAction(elements);
 
@@ -193,7 +194,7 @@ async function runLoop(browser, context, page, actionLog){
 async function main(){
   const browser = await playwright["chromium"].launch({
     headless: false,
-    slowMo: 40
+    slowMo: 0
   });
   const context = await browser.newContext();
   const page = await context.newPage();
