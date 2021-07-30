@@ -102,29 +102,31 @@ function _rng(min, max) { // min and max included
  * @param {Object} page playwright page context
  * @param {Object} action  action element tuple {action: "", element: <>}
  */
-async function runAction(page, action){
+async function runAction(page, actionTuple){
   let startingURL = page.url();
-  if(action === NAVIGATE){
+  if(actionTuple.action === NAVIGATE){
     let flip = _rng(0,1);
 
     if(flip){
-      console.log("clicking on ", element);
-      await action.element.click();
+      console.log("clicking on ", actionTuple.element);
+      await actionTuple.element.click();
     }
     else{
-      console.log("double clicking on ", element);
-      await action.element.dblClick();
+      console.log("double clicking on ", actionTuple.element);
+      await actionTuple.element.dblClick();
     }
 
     
   }
-  else if(action === ATTACK){
-    console.log("attacking! ", element);
-    action.element.fill(action.attackString);
+  else if(actionTuple.action === ATTACK){
+    console.log("attacking! ", actionTuple.element);
+    actionTuple.element.fill(actionTuple.attackString);
   }
 
   if(startingURL !== page.url()){
+    console.log('waiting for navigation')
     await page.waitForNavigation();
+    console.log('finished waiiting for navigation');
   }
 }
 
@@ -173,7 +175,7 @@ async function printActionLogAndExit(browser, actionLog){
 async function runLoop(browser, context, page, actionLog){
 console.log('In run loop');
   let elements = await findAllRelaventElements(page);
-  console.log('elements \n', elements);
+  // console.log('elements \n', elements);
 
   let randomAction = chooseARandomAction(elements);
 
