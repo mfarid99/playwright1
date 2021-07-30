@@ -15,9 +15,9 @@ async function login(page){
 
 /**
  * @returns {
-    "atags": [],
-    "inputs": [],
-    "buttons": []
+    "atags": [<String>"Selector"],
+    "inputs": [<String>"Selector"],
+    "buttons": [<String>"Selector"]
  * }
  */
 async function findAllRelaventElements(page){
@@ -68,10 +68,6 @@ function chooseARandomAction(currentPageElements){
     return chooseARandomAction(currentPageElements);
   }
 
-
-
-
-
 }
 
 /**
@@ -80,8 +76,12 @@ function chooseARandomAction(currentPageElements){
  * @param {Object} action  action element tuple {action: "", element: <>}
  */
 async function runAction(page, action){
-  //TODO: MB to implement
-
+  if(action === NAVIGATE){
+    await page.click(action.element);
+  }
+  else if(action === INPUT){
+    page.fill(action.element, action.attackString);
+  }
 }
 
 
