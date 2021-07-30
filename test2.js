@@ -15,17 +15,19 @@ const playwright = require("playwright");
     height: 9000
 })
 
-let something = require('../login_info_Fedex.json')
+let login = require('../login_info_Fedex.json')
+//port it to name
+
 // console.log(something.username)
-let username = something.username
+let username = login.username
 console.log(username)
-let password = something.password
+let password = login.password
 console.log(password)
 
 
 
   //await page.goto("https://app.triblio-qa.com/");
- await page.goto("https://app.triblio-qa.com/app#/audience");
+ await page.goto("https://app.triblio-qa.com/app#/home");
 
 
 //   var data = '../../login_info_Fedex.js';          

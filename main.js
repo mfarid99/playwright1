@@ -10,6 +10,22 @@ const NAVIGATE = 'navigate', ATTACK = 'jsInject';
 
 async function login(page){
   //TODO: MF:  Will get a QA login here...
+
+  let login = require('../login_info_Fedex.json')
+  let username = login.username
+  console.log(username)
+  let password = login.password
+  console.log(password)
+
+ await page.goto("https://app.triblio-qa.com/app#/home");
+ await page.type('[name=email]', username);
+ await page.type('[name=password]', password);
+ await page.keyboard.press('Enter')
+ await page.waitForNavigation({
+    waitUntil: 'networkidle0',
+  });  
+await browser.close();
+
 }
 
 
@@ -167,4 +183,4 @@ async function main(){
 
 
 //Run the program
-await main();
+ main();
