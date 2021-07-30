@@ -120,13 +120,15 @@ function _rng(min, max) { // min and max included
  * @param {Object} page playwright page context
  * @param {Object} action  action element tuple {action: "", element: <>}
  */
+let counter = 0;
 async function runAction(page, actionTuple){
   let startingURL = page.url();
+  counter++;
   if(actionTuple.action === NAVIGATE){
     let flip = _rng(0,1);
 
     // if(flip){
-      console.log("clicking on ", actionTuple.action);
+      console.log("clicking on ");
       await actionTuple.element.click();
     // }
     // else{
@@ -137,15 +139,20 @@ async function runAction(page, actionTuple){
     
   }
   else if(actionTuple.action === ATTACK){
-    console.log("attacking! ", actionTuple.action);
+    console.log("attacking! ");
     actionTuple.element.fill(actionTuple.attackString);
   }
 
   if(startingURL !== page.url()){
     console.log('waiting for navigation')
-    // await page.waitForNavigation();
     await page.waitForLoadState("networkidle", {});
     console.log('finished waiiting for navigation');
+    counter = 0;
+  }
+  if(counter > 100){
+    console.log('went back to home page');
+    await page.goto("https://app.triblio-qa.com/app#/home");
+    await page.waitForLoadState("networkidle", {}); 
   }
 }
 
@@ -178,7 +185,6 @@ async function printActionLogAndExit(browser, actionLog){
   await browser.close();
   process.exit(0);
 }
-
 
 /**
  * 
