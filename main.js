@@ -4,13 +4,12 @@ const playwright = require("playwright");
 //Action types
 const NAVIGATE = 'navigate', ATTACK = 'jsInject';
 
+var pageDidCrash = false, dialogDidShow = false;
 
 
 //object from playwright
 
 async function login(page){
-  //TODO: MF:  Will get a QA login here...
-
   let login = require('../login_info_Fedex.json')
   let username = login.username
   console.log(username)
@@ -23,9 +22,7 @@ async function login(page){
  await page.keyboard.press('Enter')
  await page.waitForNavigation({
     waitUntil: 'networkidle0',
-  });  
-await browser.close();
-
+  });
 }
 
 
@@ -51,7 +48,7 @@ function chooseARandomAction(currentPageElements){
   //Will choose between naviage and injection attack
   let choices = [NAVIGATE, ATTACK];
 
-  let coinFlip = Math.random() < 0.5 ? 0 : 1;
+  let coinFlip = _rng(0,1);
 
   let ret = {action: choices[coinFlip]};
 
@@ -60,7 +57,7 @@ function chooseARandomAction(currentPageElements){
     (currentPageElements.atags.length > 0 || currentPageElements.buttons.length > 0)){
     let clickableElements = currentPageElements.atags.concat(currentPageElements.buttons);
     let totalElements = clickableElements.length;
-    let elementIdx = Math.floor(Math.random() * totalElements);
+    let elementIdx = _rng(0, totalElements-1);
     let randomElement = clickableElements[elementIdx];
     ret.element = randomElement;
   }
@@ -86,6 +83,11 @@ function chooseARandomAction(currentPageElements){
 
 }
 
+//swiped from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
+function _rng(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 /**
  * 
  * @param {Object} page playwright page context
@@ -93,10 +95,19 @@ function chooseARandomAction(currentPageElements){
  */
 async function runAction(page, action){
   if(action === NAVIGATE){
-    await page.click(action.element);
+    let flip = _rng(0,1);
+
+    if(flip){
+      await action.element.click();
+    }
+    else{
+      await action.element.dblClick();
+    }
+
+    
   }
   else if(action === INPUT){
-    page.fill(action.element, action.attackString);
+    action.element.fill(action.attackString);
   }
 }
 
@@ -108,8 +119,13 @@ async function runAction(page, action){
  * @param {Object} page playwricht page object
  * * @returns null if false or true if there is an error
  */
-async function checkForErrors(browser, context, page){
-  //TODO: Implement
+function checkForErrors(browser, context, page){
+  if(pageDidCrash || dialogDidShow){
+    return true;
+  }
+  else return false;
+
+
 }
 
 /**
@@ -127,10 +143,14 @@ function didPageChange(previousPage, currentPage){
 
 /**
  * prints the log and exits the program
+ * @param {Object} browser puppeteer browser object
  * @param {Array} actionLog list of actions take by automation
  */
-function printActionLogAndExit(actionLog){
-  //TODO: Implement
+await function printActionLogAndExit(browser, actionLog){
+  console.log("Found an Error!");
+  console.dir(actionLog);
+  await browser.close();
+  process.exit(0);
 }
 
 
@@ -151,18 +171,20 @@ async function runLoop(browser, context, page, actionLog){
 
   let randomAction = chooseARandomAction(elements);
 
+  actionLog.push(page.url());
+
   actionLog.push(randomAction);
 
   await runAction(page, randomAction);
 
-  let errors = await checkForErrors(browser, context, page);
+  let errors = checkForErrors(browser, context, page);
 
   if(!errors){
     //Recursive call!
     await runLoop(browser, context, page, actionLog)
   }
   else{
-    printActionLogAndExit(actionLog);
+    await printActionLogAndExit(browser, actionLog);
   }
 }
 
@@ -175,9 +197,21 @@ async function main(){
   });
   const context = await browser.newContext();
   const page = await context.newPage();
+
+  page.on('crash', function(){
+    pageDidCrash = true;
+    console.log("page Crashed!");
+  });
+
+  page.on('dialog', function(){
+    dialogDidShow = true;
+    //TODO: check that the message in the dialog matches what we set in injection attack
+    console.log("dialog did show!");
+  });
+
+
   await login(page);
 
-  //TODO: Build the main loop
   await runLoop(browser, context, page, []);
 }
 
