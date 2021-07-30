@@ -53,7 +53,7 @@ async function _filter(elements) {
       //console.log(isEnabled);
       if(isVisible && isEnabled) newList.push(element);
     } catch(e){
-      console.log("error wasn't on page", e, element);
+      // console.log("error wasn't on page", e, element);
     }
     
   }
