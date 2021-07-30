@@ -146,7 +146,7 @@ function didPageChange(previousPage, currentPage){
  * @param {Object} browser puppeteer browser object
  * @param {Array} actionLog list of actions take by automation
  */
-await function printActionLogAndExit(browser, actionLog){
+async function printActionLogAndExit(browser, actionLog){
   console.log("Found an Error!");
   console.dir(actionLog);
   await browser.close();
