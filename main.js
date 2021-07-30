@@ -141,9 +141,7 @@ async function runAction(page, actionTuple){
   if(startingURL !== page.url()){
     console.log('waiting for navigation')
     // await page.waitForNavigation();
-    await page.waitForLoadState({
-      waitUntil: "networkidle"
-    });
+    await page.waitForLoadState("networkidle", {});
     console.log('finished waiiting for navigation');
   }
 }
