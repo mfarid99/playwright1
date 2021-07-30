@@ -127,15 +127,12 @@ async function runAction(page, actionTuple){
   if(actionTuple.action === NAVIGATE){
     let flip = _rng(0,1);
 
-    // if(flip){
-      console.log("clicking on ");
+    console.log("clicking on ");
+    try{
       await actionTuple.element.click();
-    // }
-    // else{
-    //   console.log("double clicking on ", actionTuple.element);
-    //   await actionTuple.element.dblClick();
-    // }
-
+    }catch(e){
+      console.log("element was not clickable");
+    }
     
   }
   else if(actionTuple.action === ATTACK){
