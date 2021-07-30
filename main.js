@@ -57,6 +57,8 @@ function chooseARandomAction(currentPageElements){
 
   let ret = {action: choices[coinFlip]};
 
+  console.log('chosen action', ret);
+
   //pick the elment we want to click
   if(ret.action === NAVIGATE && 
     (currentPageElements.atags.length > 0 || currentPageElements.buttons.length > 0)){
@@ -86,6 +88,8 @@ function chooseARandomAction(currentPageElements){
     return chooseARandomAction(currentPageElements);
   }
 
+  return ret;
+
 }
 
 //swiped from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
@@ -99,6 +103,7 @@ function _rng(min, max) { // min and max included
  * @param {Object} action  action element tuple {action: "", element: <>}
  */
 async function runAction(page, action){
+  let startingURL = page.url();
   if(action === NAVIGATE){
     let flip = _rng(0,1);
 
@@ -118,9 +123,9 @@ async function runAction(page, action){
     action.element.fill(action.attackString);
   }
 
-  await page.waitForNavigation({
-    waitUntil: 'networkidle0',
-  });
+  if(startingURL !== page.url()){
+    await page.waitForNavigation();
+  }
 }
 
 
@@ -171,6 +176,8 @@ console.log('In run loop');
   console.log('elements \n', elements);
 
   let randomAction = chooseARandomAction(elements);
+
+  console.log('random action selectedd ', randomAction);
 
   actionLog.push(page.url());
 
