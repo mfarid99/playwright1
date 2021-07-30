@@ -38,8 +38,12 @@ async function findAllRelaventElements(page){
     let buttons = await page.$$('button');
     let aTags = await page.$$('a');
     let inputs = await page.$$('input');
+    // debugger;
+    return {buttons: buttons.filter(e => e.isVisible() && e.isEnabled()),
+       atags: aTags.filter(e => e.isVisible() && e.isEnabled()),
+       inputs: inputs.filter(e => e.isVisible() && e.isEnabled())};
 
-    return {buttons: buttons, atags: aTags, inputs: inputs};
+
 }
 
 
