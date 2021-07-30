@@ -146,7 +146,7 @@ async function runAction(page, actionTuple){
     console.log('finished waiiting for navigation');
     counter = 0;
   }
-  if(counter > 100){
+  if(counter > 10){
     console.log('went back to home page');
     await page.goto("https://app.triblio-qa.com/app#/home");
     await page.waitForLoadState("networkidle", {}); 
@@ -168,6 +168,18 @@ function checkForErrors(browser, context, page){
   else return false;
 
 
+}
+
+async function checkForModels(page) {
+  console.log('at models');
+  let models = await page.$$('div.modal');
+  console.log(models);
+  if(models.length > 0){
+    console.log('got to where there is a modal');
+    // page.$("button:contains(Cancel)");
+    await page.click("text=Cancel");
+
+  }
 }
 
 
@@ -209,6 +221,8 @@ console.log('In run loop');
 
   await runAction(page, randomAction);
 
+  await checkForModels(page);
+
   let errors = checkForErrors(browser, context, page);
 
   if(!errors){
@@ -218,6 +232,7 @@ console.log('In run loop');
   else{
     await printActionLogAndExit(browser, actionLog);
   }
+
 }
 
 
