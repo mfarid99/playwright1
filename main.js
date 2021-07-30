@@ -35,6 +35,11 @@ async function login(page){
  */
 async function findAllRelaventElements(page){
   //TODO:CP to implement...
+    let buttons = await page.$$('button');
+    let aTags = await page.$$('a');
+    let inputs = await page.$$('input');
+
+    return {buttons: buttons, atags: aTags, inputs: inputs};
 }
 
 
