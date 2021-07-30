@@ -35,13 +35,26 @@ async function login(page){
  */
 async function findAllRelaventElements(page){
   //TODO:CP to implement...
-    let buttons = await page.$$('button');
-    let aTags = await page.$$('a');
-    let inputs = await page.$$('input');
+    let buttons = (await page.$$('button'));
+    let aTags = (await page.$$('a'));
+    let inputs = (await page.$$('input'));
     // debugger;
-    return {buttons: buttons.filter(e => e.isVisible() && e.isEnabled()),
-       atags: aTags.filter(e => e.isVisible() && e.isEnabled()),
-       inputs: inputs.filter(e => e.isVisible() && e.isEnabled())};
+    return {buttons: await _filter(buttons), atags: await _filter(aTags), inputs: await _filter(inputs)};
+}
+
+async function _filter(elements) {
+  let newList = [];
+  debugger;
+
+  for(let ii = 0; ii< elements.length; ii++){
+    let element = elements[ii];
+    let isVisible = await element.isVisible();
+    console.log(isVisible);
+    let isEnabled = await element.isEnabled();
+    console.log(isEnabled);
+    if(isVisible && isEnabled) newList.push(element);
+  }
+  return  newList;
 }
 
 
@@ -59,7 +72,7 @@ function chooseARandomAction(currentPageElements){
 
   let ret = {action: choices[coinFlip]};
 
-  console.log('chosen action', ret);
+  // console.log('chosen action', ret);
 
   //pick the elment we want to click
   if(ret.action === NAVIGATE && 
@@ -110,7 +123,7 @@ async function runAction(page, actionTuple){
     let flip = _rng(0,1);
 
     // if(flip){
-      console.log("clicking on ", actionTuple.element);
+      console.log("clicking on ");
       await actionTuple.element.click();
     // }
     // else{
@@ -121,13 +134,14 @@ async function runAction(page, actionTuple){
     
   }
   else if(actionTuple.action === ATTACK){
-    console.log("attacking! ", actionTuple.element);
+    console.log("attacking! ");
     actionTuple.element.fill(actionTuple.attackString);
   }
 
   if(startingURL !== page.url()){
     console.log('waiting for navigation')
-    await page.waitForNavigation();
+    // await page.waitForNavigation();
+    await page.waitForLoadState({waitUntil: "networkidle"});
     console.log('finished waiiting for navigation');
   }
 }
@@ -177,11 +191,11 @@ async function printActionLogAndExit(browser, actionLog){
 async function runLoop(browser, context, page, actionLog){
 console.log('In run loop');
   let elements = await findAllRelaventElements(page);
-  // console.log('elements \n', elements);
 
+  console.log('got all elements on page', elements.length);
   let randomAction = chooseARandomAction(elements);
 
-  console.log('random action selectedd ', randomAction);
+  // console.log('random action selected ', randomAction);
 
   actionLog.push(page.url());
 
