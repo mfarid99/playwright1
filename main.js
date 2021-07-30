@@ -123,7 +123,7 @@ async function runAction(page, actionTuple){
     let flip = _rng(0,1);
 
     // if(flip){
-      console.log("clicking on ");
+      console.log("clicking on ", actionTuple.action);
       await actionTuple.element.click();
     // }
     // else{
@@ -134,14 +134,16 @@ async function runAction(page, actionTuple){
     
   }
   else if(actionTuple.action === ATTACK){
-    console.log("attacking! ");
+    console.log("attacking! ", actionTuple.action);
     actionTuple.element.fill(actionTuple.attackString);
   }
 
   if(startingURL !== page.url()){
     console.log('waiting for navigation')
     // await page.waitForNavigation();
-    await page.waitForLoadState({waitUntil: "networkidle"});
+    await page.waitForLoadState({
+      waitUntil: "networkidle"
+    });
     console.log('finished waiiting for navigation');
   }
 }
@@ -192,7 +194,7 @@ async function runLoop(browser, context, page, actionLog){
 console.log('In run loop');
   let elements = await findAllRelaventElements(page);
 
-  console.log('got all elements on page', elements.length);
+  console.log('got all elements on page');
   let randomAction = chooseARandomAction(elements);
 
   // console.log('random action selected ', randomAction);
