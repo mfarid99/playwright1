@@ -53,11 +53,23 @@ async function _filter(elements) {
       //console.log(isEnabled);
       if(isVisible && isEnabled) newList.push(element);
     } catch(e){
-      // console.log("error wasn't on page", e, element);
+
+      console.log("error wasn't on page");
     }
     
   }
   return  newList;
+}
+
+async function closePages(context){
+  let pages = context.pages();
+  let numPages = pages.length;
+  while(numPages > 1){
+    let p = pages.pop();
+    await p.close()
+    pages = context.pages();
+    numPages = pages.length;
+  }
 }
 
 
@@ -222,6 +234,8 @@ console.log('In run loop');
   await runAction(page, randomAction);
 
   await checkForModels(page);
+
+  await closePages(context);
 
   let errors = checkForErrors(browser, context, page);
 
