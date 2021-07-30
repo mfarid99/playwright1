@@ -34,7 +34,6 @@ async function login(page){
  * }
  */
 async function findAllRelaventElements(page){
-  //TODO:CP to implement...
     let buttons = (await page.$$('button'));
     let aTags = (await page.$$('a'));
     let inputs = (await page.$$('input'));
@@ -44,15 +43,19 @@ async function findAllRelaventElements(page){
 
 async function _filter(elements) {
   let newList = [];
-  debugger;
 
   for(let ii = 0; ii< elements.length; ii++){
     let element = elements[ii];
-    let isVisible = await element.isVisible();
-    console.log(isVisible);
-    let isEnabled = await element.isEnabled();
-    console.log(isEnabled);
-    if(isVisible && isEnabled) newList.push(element);
+    try{
+      let isVisible = await element.isVisible();
+      //console.log(isVisible);
+      let isEnabled = await element.isEnabled();
+      //console.log(isEnabled);
+      if(isVisible && isEnabled) newList.push(element);
+    } catch(e){
+      console.log("error wasn't on page", e, element);
+    }
+    
   }
   return  newList;
 }
